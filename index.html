@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Farzad Rahim Khanian - Software Engineer specializing in Real-time Systems, AI/ML, and Signal Processing">
-    <title>Farzad Rahim Khanian | Software Engineer & AI Researcher</title>
+    <meta name="description" content="EyeFlame - Advanced AI-powered behavioral analysis toolkit for gaze estimation, head pose tracking, and cognitive assessment">
+    <title>EyeFlame | Behavioral Analysis Toolkit</title>
     <style>
         * {
             margin: 0;
@@ -13,59 +13,84 @@
         }
 
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --neural-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --signal-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --dark-bg: #0a0e27;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --text-primary: #ffffff;
-            --text-secondary: #a8b2d1;
-            --accent: #64ffda;
-            --hover-color: #f093fb;
+            --primary-purple: #a855f7;
+            --secondary-purple: #9333ea;
+            --dark-purple: #7e22ce;
+            --accent-pink: #ec4899;
+            --bg-light: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--dark-bg);
+            background: var(--bg-light);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Neural Network Background Animation */
-        .neural-bg {
+        /* Animated Background */
+        .bg-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.1;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(100, 126, 234, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(79, 172, 254, 0.3) 0%, transparent 50%);
-            animation: floatAnimation 20s ease-in-out infinite;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
+            overflow: hidden;
         }
 
-        @keyframes floatAnimation {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-20px, -20px) rotate(1deg); }
-            66% { transform: translate(20px, -10px) rotate(-1deg); }
-        }
-
-        /* Signal Wave Animation */
-        .signal-wave {
+        .flame-particle {
             position: absolute;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(90deg, transparent, rgba(100, 126, 234, 0.2), transparent);
-            animation: wave 8s linear infinite;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, var(--primary-purple), transparent);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+            filter: blur(1px);
         }
 
-        @keyframes wave {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.2); }
+            50% { transform: translate(-20px, -60px) scale(0.8); }
+            75% { transform: translate(-30px, -30px) scale(1.1); }
+        }
+
+        /* Neural Network Lines */
+        .neural-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-purple), transparent);
+            opacity: 0.2;
+            animation: slideAcross 15s infinite linear;
+        }
+
+        @keyframes slideAcross {
+            0% { transform: translateX(-100%); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        /* Gradient Orbs */
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            animation: moveOrb 20s infinite ease-in-out;
+        }
+
+        @keyframes moveOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(100px, -100px) scale(1.2); }
+            66% { transform: translate(-100px, 100px) scale(0.8); }
         }
 
         /* Navigation */
@@ -73,11 +98,11 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(10, 14, 39, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
             z-index: 1000;
             padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-container {
@@ -89,6 +114,24 @@
             align-items: center;
         }
 
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -98,12 +141,28 @@
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
             font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-purple);
+            transition: width 0.3s;
         }
 
         .nav-links a:hover {
-            color: var(--accent);
+            color: var(--primary-purple);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Hero Section */
@@ -112,54 +171,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            padding: 2rem;
+            padding: 6rem 2rem 2rem;
         }
 
         .hero-content {
+            max-width: 1200px;
             text-align: center;
-            z-index: 2;
-            max-width: 800px;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
             animation: fadeInUp 1s ease-out;
-        }
-
-        .hero .subtitle {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        .hero .specialties {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease-out 0.4s both;
-        }
-
-        .specialty-tag {
-            padding: 0.5rem 1rem;
-            background: rgba(100, 126, 234, 0.2);
-            border: 1px solid rgba(100, 126, 234, 0.5);
-            border-radius: 25px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .specialty-tag:hover {
-            background: rgba(100, 126, 234, 0.3);
-            transform: translateY(-2px);
         }
 
         @keyframes fadeInUp {
@@ -173,28 +191,67 @@
             }
         }
 
-        /* Contact Links */
-        .contact-links {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            animation: fadeInUp 1s ease-out 0.6s both;
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
         }
 
-        .contact-links a {
+        .hero .subtitle {
+            font-size: 1.5rem;
             color: var(--text-secondary);
-            text-decoration: none;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.3s;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .contact-links a:hover {
-            color: var(--accent);
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
         }
 
-        /* Section Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--primary-purple);
+            border: 2px solid var(--primary-purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        /* Section */
         .section {
             padding: 5rem 2rem;
             max-width: 1200px;
@@ -203,214 +260,292 @@
 
         .section-title {
             font-size: 2.5rem;
-            margin-bottom: 3rem;
+            font-weight: 800;
             text-align: center;
-            background: var(--signal-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
-        /* Project Grid */
-        .project-grid {
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Models Grid */
+        .models-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
+            margin-top: 3rem;
         }
 
-        .project-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            transition: all 0.3s;
+        .model-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .project-card::before {
+        .model-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: var(--primary-gradient);
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--accent-pink));
             transform: scaleX(0);
-            transition: transform 0.3s;
+            transition: transform 0.4s;
         }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(100, 126, 234, 0.5);
-            box-shadow: 0 10px 30px rgba(100, 126, 234, 0.2);
+        .model-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
+            border-color: var(--primary-purple);
         }
 
-        .project-card:hover::before {
+        .model-card:hover::before {
             transform: scaleX(1);
         }
 
-        .project-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-ready {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-wip {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .model-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--text-primary);
         }
 
-        .project-description {
+        .model-card p {
             color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
         }
 
-        .project-tech {
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric {
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .tech-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1rem;
+            margin-top: 1rem;
         }
 
         .tech-tag {
-            padding: 0.25rem 0.75rem;
-            background: rgba(79, 172, 254, 0.2);
-            border: 1px solid rgba(79, 172, 254, 0.4);
-            border-radius: 15px;
+            padding: 0.4rem 0.9rem;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
             font-size: 0.85rem;
-            color: var(--accent);
+            color: var(--primary-purple);
+            font-weight: 500;
         }
 
         .project-links {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .project-link {
-            color: var(--accent);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        .project-link:hover {
-            color: var(--hover-color);
-        }
-
-        /* Category Tabs */
-        .category-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 3rem;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
 
-        .category-tab {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .category-tab.active {
-            background: var(--primary-gradient);
+        .btn-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--text-primary);
             color: white;
-            border-color: transparent;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
 
-        .category-tab:hover:not(.active) {
-            border-color: rgba(100, 126, 234, 0.5);
+        .btn-github:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.3);
+            background: #0f172a;
+        }
+
+        .btn-github svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .model-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .model-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .detail-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .detail-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-list li:last-child {
+            border-bottom: none;
+        }
+
+        .detail-list strong {
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: rgba(168, 85, 247, 0.1);
+            border-left: 3px solid var(--primary-purple);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feature h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
             color: var(--text-primary);
         }
 
-        /* Skills Section */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .skill-category {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 1.5rem;
-        }
-
-        .skill-category h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-
-        .skill-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .skill-item {
-            padding: 0.3rem 0.8rem;
-            background: rgba(100, 255, 218, 0.1);
-            border: 1px solid rgba(100, 255, 218, 0.3);
-            border-radius: 15px;
-            font-size: 0.9rem;
+        .feature p {
             color: var(--text-secondary);
+            line-height: 1.7;
         }
 
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 2px;
-            background: var(--primary-gradient);
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .timeline-item {
-            position: relative;
-            padding-bottom: 2rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.5rem;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: 2px solid var(--dark-bg);
-        }
-
-        .timeline-date {
-            color: var(--accent);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-company {
+        .contact-info {
+            font-size: 1.1rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
+        }
+
+        .contact-info a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
         }
 
         /* Responsive */
@@ -423,7 +558,8 @@
                 font-size: 1.2rem;
             }
 
-            .project-grid {
+            .models-grid,
+            .features-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -434,332 +570,531 @@
     </style>
 </head>
 <body>
-    <div class="neural-bg"></div>
-    
+    <div class="bg-animation" id="bgAnimation"></div>
+
     <nav>
         <div class="nav-container">
-            <div class="logo">FRK</div>
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#9333ea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Eye outline -->
+                    <path d="M 10 40 Q 10 20, 60 20 Q 110 20, 110 40 Q 110 60, 60 60 Q 10 60, 10 40 Z" 
+                          fill="none" 
+                          stroke="url(#logoGradient)" 
+                          stroke-width="2"
+                          opacity="0.9"/>
+                    
+                    <!-- Iris circle -->
+                    <circle cx="60" cy="40" r="18" 
+                            fill="none" 
+                            stroke="url(#logoGradient)" 
+                            stroke-width="1.5"
+                            opacity="0.7"/>
+                    
+                    <!-- Triangle in center (prism) -->
+                    <path d="M 60 28 L 68 48 L 52 48 Z" 
+                          fill="none" 
+                          stroke="url(#logoGradient)" 
+                          stroke-width="2.5"
+                          filter="url(#glow)"/>
+                    
+                    <!-- Flame particles around triangle -->
+                    <!-- Upper flames -->
+                    <path d="M 60 28 L 60 23" 
+                          stroke="#a855f7" 
+                          stroke-width="1.5" 
+                          opacity="0.8"
+                          stroke-linecap="round"/>
+                    <path d="M 58 29 L 56 25" 
+                          stroke="#ec4899" 
+                          stroke-width="1" 
+                          opacity="0.7"
+                          stroke-linecap="round"/>
+                    <path d="M 62 29 L 64 25" 
+                          stroke="#9333ea" 
+                          stroke-width="1" 
+                          opacity="0.7"
+                          stroke-linecap="round"/>
+                    
+                    <!-- Right flames -->
+                    <path d="M 68 48 L 72 49" 
+                          stroke="#a855f7" 
+                          stroke-width="1.5" 
+                          opacity="0.8"
+                          stroke-linecap="round"/>
+                    <path d="M 67 46 L 70 45" 
+                          stroke="#ec4899" 
+                          stroke-width="1" 
+                          opacity="0.6"
+                          stroke-linecap="round"/>
+                    <path d="M 67 50 L 71 52" 
+                          stroke="#9333ea" 
+                          stroke-width="1" 
+                          opacity="0.6"
+                          stroke-linecap="round"/>
+                    
+                    <!-- Left flames -->
+                    <path d="M 52 48 L 48 49" 
+                          stroke="#a855f7" 
+                          stroke-width="1.5" 
+                          opacity="0.8"
+                          stroke-linecap="round"/>
+                    <path d="M 53 46 L 50 45" 
+                          stroke="#ec4899" 
+                          stroke-width="1" 
+                          opacity="0.6"
+                          stroke-linecap="round"/>
+                    <path d="M 53 50 L 49 52" 
+                          stroke="#9333ea" 
+                          stroke-width="1" 
+                          opacity="0.6"
+                          stroke-linecap="round"/>
+                    
+                    <!-- Subtle flame wisps -->
+                    <circle cx="60" cy="25" r="1" fill="#a855f7" opacity="0.5"/>
+                    <circle cx="70" cy="47" r="0.8" fill="#ec4899" opacity="0.4"/>
+                    <circle cx="50" cy="47" r="0.8" fill="#9333ea" opacity="0.4"/>
+                </svg>
+                <span>EyeFlame</span>
+            </div>
             <ul class="nav-links">
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#skills">Skills</a></li>
+                <li><a href="#models">Models</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#research">Research</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="signal-wave"></div>
         <div class="hero-content">
-            <h1>Farzad Rahim Khanian</h1>
-            <p class="subtitle">Software Engineer & AI/ML Researcher</p>
-            <div class="specialties">
-                <span class="specialty-tag">Real-time Systems</span>
-                <span class="specialty-tag">Computer Vision</span>
-                <span class="specialty-tag">Signal Processing</span>
-                <span class="specialty-tag">Deep Learning</span>
-                <span class="specialty-tag">Full-Stack Development</span>
-            </div>
-            <div class="contact-links">
-                <a href="mailto:farzad.u235@gmail.com">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                    Email
-                </a>
-                <a href="https://github.com/Farzad-RK" target="_blank">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-                    </svg>
-                    GitHub
-                </a>
-                <a href="http://www.linkedin.com/in/farzad-rahim-khanian-90b024231" target="_blank">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                    </svg>
-                    LinkedIn
-                </a>
+            <h1>Behavioral analysis toolkit<br>for edge devices</h1>
+            <p class="subtitle">Advanced gaze estimation, head pose tracking, and cognitive assessment toolkit for real-world applications</p>
+            <div class="cta-buttons">
+                <a href="#models" class="btn btn-primary">Explore Models</a>
+                <a href="#research" class="btn btn-secondary">View Research</a>
             </div>
         </div>
     </section>
 
-    <section id="projects" class="section">
-        <h2 class="section-title">Featured Projects</h2>
-        
-        <div class="category-tabs">
-            <button class="category-tab active" onclick="filterProjects('all')">All Projects</button>
-            <button class="category-tab" onclick="filterProjects('ai-ml')">AI/ML & Computer Vision</button>
-            <button class="category-tab" onclick="filterProjects('realtime')">Real-time Systems</button>
-            <button class="category-tab" onclick="filterProjects('fullstack')">Full-Stack</button>
-            <button class="category-tab" onclick="filterProjects('signal')">Signal Processing</button>
-        </div>
+    <section id="models" class="section">
+        <h2 class="section-title">Production-Ready Models</h2>
+        <p class="section-subtitle">State-of-the-art AI models optimized for mobile and edge devices</p>
 
-        <div class="project-grid" id="projectGrid">
-            <!-- AI/ML Projects -->
-            <div class="project-card" data-category="ai-ml">
-                <h3 class="project-title">Stereo Gaze Estimation & Eye Segmentation</h3>
-                <p class="project-description">Mobile-optimized deep learning model for real-time gaze tracking and cognitive load assessment using multi-task learning</p>
-                <div class="project-tech">
-                    <span class="tech-tag">PyTorch</span>
-                    <span class="tech-tag">Computer Vision</span>
-                    <span class="tech-tag">Vision Transformers</span>
-                    <span class="tech-tag">CUDA</span>
+        <div class="models-grid">
+            <div class="model-card">
+                <span class="status-badge status-ready">✓ Production Ready</span>
+                <h3>6D Head Pose Estimation</h3>
+                <p>State-of-the-art head pose tracking using continuous 6D rotation representation. Outperforms RepVGG-B1 baseline while using 35% fewer parameters through RepNeXt-M4 architecture.</p>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-value">3.91°</span>
+                        <span class="metric-label">Mean Angular Error</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">13.8M</span>
+                        <span class="metric-label">Parameters</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">35%</span>
+                        <span class="metric-label">Size Reduction</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">Mobile</span>
+                        <span class="metric-label">Optimized</span>
+                    </div>
                 </div>
-                <div class="project-links">
-                    <span class="project-link">Master's Thesis Project</span>
-                </div>
-            </div>
 
-            <div class="project-card" data-category="ai-ml">
-                <h3 class="project-title">COVID-19 Detection & CBIR System</h3>
-                <p class="project-description">Medical image processing system using VGG16 and U-Net for COVID-19 detection with content-based image retrieval</p>
-                <div class="project-tech">
-                    <span class="tech-tag">VGG16</span>
-                    <span class="tech-tag">U-Net</span>
-                    <span class="tech-tag">Transfer Learning</span>
-                    <span class="tech-tag">Medical Imaging</span>
+                <ul class="detail-list">
+                    <li><strong>Architecture:</strong> RepNeXt-M4 backbone with 6D rotation output</li>
+                    <li><strong>Training:</strong> AFLW2000 test set, 300W-LP training set</li>
+                    <li><strong>Method:</strong> Gram-Schmidt orthonormalization for SO(3)</li>
+                    <li><strong>Loss:</strong> Geodesic distance on rotation manifold</li>
+                    <li><strong>Comparison:</strong> 3.91° vs 3.97° (RepVGG-B1 20M params)</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>Key Innovation:</strong> Replaces Euler angles with continuous 6D representation to avoid gimbal lock, ensuring stable rotations across full ±80° yaw/pitch range.</p>
                 </div>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">RepNeXt-M4</span>
+                    <span class="tech-tag">6D Rotation</span>
+                    <span class="tech-tag">Geodesic Loss</span>
+                    <span class="tech-tag">Mobile Edge</span>
+                </div>
+
                 <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/covid-19-search-engine" target="_blank" class="project-link">
-                        View on GitHub →
+                    <a href="https://github.com/Farzad-RK/RayNet/tree/main/sixdrepnet" class="btn-github" target="_blank">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="https://huggingface.co/phorosyne/6DRepNet-RepNeXt-M4" class="model-link" target="_blank">
+                        🤗 Hugging Face
                     </a>
                 </div>
             </div>
 
-            <!-- Real-time Systems -->
-            <div class="project-card" data-category="realtime">
-                <h3 class="project-title">Imcoach Football Tracking Platform</h3>
-                <p class="project-description">Real-time football tracking visualization system achieving 60fps performance with Voronoi coverage analysis</p>
-                <div class="project-tech">
-                    <span class="tech-tag">React Native</span>
-                    <span class="tech-tag">WebSocket</span>
-                    <span class="tech-tag">D3.js</span>
-                    <span class="tech-tag">WebCodecs</span>
+            <div class="model-card">
+                <span class="status-badge status-wip">⚙ In Development</span>
+                <h3>RayNet: Multi-View Gaze System</h3>
+                <p>Stereo gaze estimation architecture leveraging 9-camera multi-view consistency. Combines PANet feature pyramid with EyeFLAME module for joint 2D-3D supervision resolving depth ambiguity.</p>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-value">95.48px</span>
+                        <span class="metric-label">2D Iris Error</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">14.89cm</span>
+                        <span class="metric-label">3D Eyeball Error</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">9 Views</span>
+                        <span class="metric-label">Multi-Camera</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">30.22°</span>
+                        <span class="metric-label">Gaze Angle Error</span>
+                    </div>
                 </div>
-                <div class="project-links">
-                    <span class="project-link">Math&Sport Production System</span>
-                </div>
-            </div>
 
-            <div class="project-card" data-category="realtime">
-                <h3 class="project-title">Meckz Multiplayer Game Netcode</h3>
-                <p class="project-description">Real-time game networking system with Reliable UDP protocol and dead reckoning for lag compensation</p>
-                <div class="project-tech">
-                    <span class="tech-tag">Golang</span>
-                    <span class="tech-tag">Flatbuffers</span>
-                    <span class="tech-tag">UDP Protocol</span>
-                    <span class="tech-tag">Unity3D</span>
+                <ul class="detail-list">
+                    <li><strong>Dataset:</strong> GazeGene (1,008,000 images, 56 subjects)</li>
+                    <li><strong>Architecture:</strong> RepNeXt + PANet + EyeFLAME heads</li>
+                    <li><strong>Multi-Task:</strong> Gaze vector, depth, head pose, pupil center</li>
+                    <li><strong>Training:</strong> 3-phase progressive strategy (2D→3D)</li>
+                    <li><strong>Camera Setup:</strong> 9 synchronized views at 5m distance</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>Progressive Training:</strong> Phase 1 focuses on 2D projection (weight=1.0), Phase 2 introduces 3D (weight=0.1), Phase 3 balances both (weights=0.5) for optimal convergence.</p>
                 </div>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Stereo Vision</span>
+                    <span class="tech-tag">PANet FPN</span>
+                    <span class="tech-tag">Multi-Task MTL</span>
+                    <span class="tech-tag">GazeGene</span>
+                </div>
+
                 <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/meckz-realtime-mutliplayer-netcode" target="_blank" class="project-link">
-                        View on GitHub →
+                    <a href="https://github.com/Farzad-RK/RayNet" class="btn-github" target="_blank">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        GitHub
                     </a>
                 </div>
             </div>
 
-            <!-- Signal Processing -->
-            <div class="project-card" data-category="signal">
-                <h3 class="project-title">IMU Chair Stand Test Analysis</h3>
-                <p class="project-description">Biomedical signal processing system with sensor fusion using Kalman filters for motion assessment</p>
-                <div class="project-tech">
-                    <span class="tech-tag">MATLAB</span>
-                    <span class="tech-tag">Kalman Filters</span>
-                    <span class="tech-tag">Sensor Fusion</span>
-                    <span class="tech-tag">Android</span>
+            <div class="model-card">
+                <span class="status-badge status-wip">⚙ Work in Progress</span>
+                <h3>EyeFLAME: 3D Eye Structure</h3>
+                <p>FLAME-inspired geometric module integrated with RayNet for anatomical eye reconstruction using multiple camera streams. Predicts 3D eyeball structures with true perspective projection leveraging multi-view consistency.</p>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-value">200</span>
+                        <span class="metric-label">Iris Landmarks</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">15.11cm</span>
+                        <span class="metric-label">3D Iris Error</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">9 Cameras</span>
+                        <span class="metric-label">Multi-View</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">3D</span>
+                        <span class="metric-label">Perspective</span>
+                    </div>
                 </div>
+
+                <ul class="detail-list">
+                    <li><strong>Architecture:</strong> Module within RayNet for multi-camera processing</li>
+                    <li><strong>Output:</strong> Eyeball centers, pupil centers, 100 iris points per eye</li>
+                    <li><strong>Method:</strong> 3D perspective model with multi-view geometry</li>
+                    <li><strong>Supervision:</strong> Joint 2D-3D loss with angular constraints</li>
+                    <li><strong>Geometry:</strong> Subject-specific kappa angles and anatomical radii</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>Multi-View Approach:</strong> Utilizes RayNet architecture to process 9 synchronized camera streams, resolving depth ambiguity through geometric triangulation rather than single-view weak perspective.</p>
+                </div>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">RayNet Integration</span>
+                    <span class="tech-tag">3D Perspective</span>
+                    <span class="tech-tag">Multi-Camera</span>
+                    <span class="tech-tag">FLAME-Style</span>
+                </div>
+
                 <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/IMU-Chair-Stand-Test-Biomedical-Analysis" target="_blank" class="project-link">
-                        View on GitHub →
+                    <a href="https://github.com/Farzad-RK/RayNet/tree/feature/iris_geometrical_model/RayNet/EyeFLAME" class="btn-github" target="_blank">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        GitHub
                     </a>
                 </div>
             </div>
 
-            <div class="project-card" data-category="signal">
-                <h3 class="project-title">Audio Source Separation</h3>
-                <p class="project-description">ML model for vocal track extraction using bidirectional LSTM and Short-time Fourier Transform</p>
-                <div class="project-tech">
-                    <span class="tech-tag">PyTorch</span>
-                    <span class="tech-tag">LSTM</span>
-                    <span class="tech-tag">STFT</span>
-                    <span class="tech-tag">Audio Processing</span>
+            <div class="model-card">
+                <span class="status-badge status-wip">⚙ In Development</span>
+                <h3>ARGaze Gaze Point Estimation</h3>
+                <p>Single-camera gaze point estimation on target plane using RepNeXt-M3. Training on ARGaze dataset with fixed 300cm depth assumption for desktop interaction scenarios.</p>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-value">9.66°</span>
+                        <span class="metric-label">Best MAE</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">7.8M</span>
+                        <span class="metric-label">Parameters</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">2000</span>
+                        <span class="metric-label">Samples/Subject</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">30</span>
+                        <span class="metric-label">Epochs</span>
+                    </div>
                 </div>
+
+                <ul class="detail-list">
+                    <li><strong>Dataset:</strong> ARGaze (1.3M image pairs from 25 subjects)</li>
+                    <li><strong>Architecture:</strong> RepNeXt-M3 backbone (lightweight)</li>
+                    <li><strong>Task:</strong> 2D gaze point projection on fixed-depth plane</li>
+                    <li><strong>Resolution:</strong> 32×32 eye images at 50fps</li>
+                    <li><strong>Application:</strong> Desktop/laptop gaze tracking</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>Ray Casting:</strong> Gaze point calculated via ray intersection: pupil center + t·gaze_direction where t = (d_plane - p_z) / v_z for fixed depth d=300cm.</p>
+                </div>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">RepNeXt-M3</span>
+                    <span class="tech-tag">ARGaze</span>
+                    <span class="tech-tag">Single View</span>
+                    <span class="tech-tag">Desktop Tracking</span>
+                </div>
+
                 <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/vocal-extraction" target="_blank" class="project-link">
-                        View on GitHub →
+                    <a href="https://github.com/Farzad-RK/RayNet/tree/main/gaze_estimation" class="btn-github" target="_blank">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        GitHub
                     </a>
-                </div>
-            </div>
-
-            <!-- Full-Stack Projects -->
-            <div class="project-card" data-category="fullstack">
-                <h3 class="project-title">Holly WebSocket Server</h3>
-                <p class="project-description">Secure WebSocket server with proprietary encryption and Redis pub/sub for microservices communication</p>
-                <div class="project-tech">
-                    <span class="tech-tag">Node.js</span>
-                    <span class="tech-tag">Redis</span>
-                    <span class="tech-tag">WebSocket</span>
-                    <span class="tech-tag">Microservices</span>
-                </div>
-                <div class="project-links">
-                    <span class="project-link">Math&Sport Infrastructure</span>
-                </div>
-            </div>
-
-            <div class="project-card" data-category="fullstack">
-                <h3 class="project-title">IoT Real-Time Monitoring</h3>
-                <p class="project-description">Sensor data monitoring system with Arduino microcontrollers and bidirectional WebSocket communication</p>
-                <div class="project-tech">
-                    <span class="tech-tag">Node.js</span>
-                    <span class="tech-tag">MongoDB</span>
-                    <span class="tech-tag">Arduino</span>
-                    <span class="tech-tag">IoT</span>
-                </div>
-                <div class="project-links">
-                    <span class="project-link">Telecommunication Center Project</span>
-                </div>
-            </div>
-
-            <div class="project-card" data-category="ai-ml">
-                <h3 class="project-title">Decision Trees ML Library</h3>
-                <p class="project-description">Custom machine learning library with ID3, CART, C4.5 algorithms and RandomForest ensemble</p>
-                <div class="project-tech">
-                    <span class="tech-tag">Python</span>
-                    <span class="tech-tag">scikit-learn</span>
-                    <span class="tech-tag">Ensemble Methods</span>
-                    <span class="tech-tag">Bayesian Optimization</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/decision-trees" target="_blank" class="project-link">
-                        View on GitHub →
-                    </a>
-                </div>
-            </div>
-
-            <div class="project-card" data-category="fullstack">
-                <h3 class="project-title">Bare-Metal Kubernetes Deployment</h3>
-                <p class="project-description">Infrastructure as code with Terraform, Longhorn distributed storage, and MetalLB load balancing</p>
-                <div class="project-tech">
-                    <span class="tech-tag">Kubernetes</span>
-                    <span class="tech-tag">Terraform</span>
-                    <span class="tech-tag">Docker</span>
-                    <span class="tech-tag">MongoDB</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/cloud-computing-bare-metal" target="_blank" class="project-link">
-                        View on GitHub →
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="experience" class="section">
-        <h2 class="section-title">Professional Experience</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-date">July 2022 - Present</div>
-                <div class="timeline-title">Full Stack Developer</div>
-                <div class="timeline-company">Math&Sport | Milan, Italy</div>
-                <p>Leading development of real-time football tracking visualization systems, WebSocket infrastructure, and security assessments</p>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">February 2020 - June 2021</div>
-                <div class="timeline-title">Frontend Developer</div>
-                <div class="timeline-company">Elay Automation Limited | London, UK (Remote)</div>
-                <p>Developed business automation tools, CRM integrations, and customizable recruitment chatbots</p>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">July 2017 - September 2019</div>
-                <div class="timeline-title">Chief Technology Officer & Full Stack Developer</div>
-                <div class="timeline-company">Diaco Studios | Ahvaz, Iran</div>
-                <p>Led technical architecture decisions, mentored developers, and delivered multiple IoT and mobile solutions</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="skills" class="section">
-        <h2 class="section-title">Technical Skills</h2>
-        <div class="skills-grid">
-            <div class="skill-category">
-                <h3>Programming Languages</h3>
-                <div class="skill-list">
-                    <span class="skill-item">JavaScript</span>
-                    <span class="skill-item">TypeScript</span>
-                    <span class="skill-item">Python</span>
-                    <span class="skill-item">C/C++</span>
-                    <span class="skill-item">Golang</span>
-                    <span class="skill-item">Java</span>
-                    <span class="skill-item">C#</span>
-                    <span class="skill-item">MATLAB</span>
-                </div>
-            </div>
-            <div class="skill-category">
-                <h3>AI/ML & Computer Vision</h3>
-                <div class="skill-list">
-                    <span class="skill-item">PyTorch</span>
-                    <span class="skill-item">TensorFlow</span>
-                    <span class="skill-item">OpenCV</span>
-                    <span class="skill-item">scikit-learn</span>
-                    <span class="skill-item">Keras</span>
-                    <span class="skill-item">CUDA</span>
-                    <span class="skill-item">Signal Processing</span>
-                </div>
-            </div>
-            <div class="skill-category">
-                <h3>Web Technologies</h3>
-                <div class="skill-list">
-                    <span class="skill-item">React.js</span>
-                    <span class="skill-item">React Native</span>
-                    <span class="skill-item">Node.js</span>
-                    <span class="skill-item">Redux</span>
-                    <span class="skill-item">WebSocket</span>
-                    <span class="skill-item">D3.js</span>
-                    <span class="skill-item">Express.js</span>
-                </div>
-            </div>
-            <div class="skill-category">
-                <h3>Cloud & DevOps</h3>
-                <div class="skill-list">
-                    <span class="skill-item">Docker</span>
-                    <span class="skill-item">Kubernetes</span>
-                    <span class="skill-item">AWS</span>
-                    <span class="skill-item">Terraform</span>
-                    <span class="skill-item">CI/CD</span>
-                    <span class="skill-item">Redis</span>
-                    <span class="skill-item">PostgreSQL</span>
-                    <span class="skill-item">MongoDB</span>
                 </div>
             </div>
         </div>
     </section>
+
+    <section id="features" class="section">
+        <h2 class="section-title">Built for Real-World Applications</h2>
+        <p class="section-subtitle">From mobile devices to cognitive analysis systems</p>
+
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Mobile Optimized</h3>
+                <p>Lightweight architectures designed for edge deployment with minimal latency and maximum accuracy.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🧠</div>
+                <h3>Cognitive Assessment</h3>
+                <p>Analyze iris patterns, pupil dynamics, and gaze behavior for cognitive load estimation.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📐</div>
+                <h3>Geometric Precision</h3>
+                <p>True 3D reconstruction of eye anatomy with accurate depth perception and multi-view consistency.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-Time Processing</h3>
+                <p>Optimized inference pipelines for real-time applications in VR, AR, and interactive systems.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔬</div>
+                <h3>Research Validated</h3>
+                <p>Models trained on state-of-the-art datasets including GazeGene, ETH-XGaze, and ARGaze.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Modular Design</h3>
+                <p>Flexible architecture supporting multiple backbones and easy integration into existing pipelines.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="research" class="section">
+        <h2 class="section-title">Research Foundation</h2>
+        <p class="section-subtitle">Built on cutting-edge computer vision and deep learning research</p>
+
+        <div class="model-card" style="max-width: 800px; margin: 0 auto;">
+            <h3>Key Innovations</h3>
+            <p style="margin-bottom: 2rem;">EyeFlame combines multiple breakthrough techniques to achieve superior performance:</p>
+            
+            <ul style="text-align: left; color: var(--text-secondary); line-height: 2; margin-bottom: 2rem;">
+                <li><strong>6D Rotation Representation:</strong> Continuous rotation matrices via Gram-Schmidt orthonormalization</li>
+                <li><strong>Weak Perspective Projection:</strong> Resolving depth ambiguity through joint 2D-3D supervision</li>
+                <li><strong>Multi-View Consistency:</strong> Leveraging 9-camera angles for geometric precision</li>
+                <li><strong>Progressive Training:</strong> Three-phase strategy balancing 2D and 3D losses</li>
+                <li><strong>Anatomical Priors:</strong> FLAME-inspired parameterization of eye structures</li>
+            </ul>
+
+            <div class="tech-tags">
+                <span class="tech-tag">PyTorch</span>
+                <span class="tech-tag">Computer Vision</span>
+                <span class="tech-tag">RepNeXt</span>
+                <span class="tech-tag">Multi-Task Learning</span>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="logo" style="margin-bottom: 1.5rem; justify-content: center;">
+                <svg class="logo-icon" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#9333ea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow2">
+                            <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <path d="M 10 40 Q 10 20, 60 20 Q 110 20, 110 40 Q 110 60, 60 60 Q 10 60, 10 40 Z" 
+                          fill="none" 
+                          stroke="url(#logoGradient2)" 
+                          stroke-width="2"
+                          opacity="0.9"/>
+                    <circle cx="60" cy="40" r="18" 
+                            fill="none" 
+                            stroke="url(#logoGradient2)" 
+                            stroke-width="1.5"
+                            opacity="0.7"/>
+                    <path d="M 60 28 L 68 48 L 52 48 Z" 
+                          fill="none" 
+                          stroke="url(#logoGradient2)" 
+                          stroke-width="2.5"
+                          filter="url(#glow2)"/>
+                    
+                    <path d="M 60 28 L 60 23" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
+                    <path d="M 58 29 L 56 25" stroke="#ec4899" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+                    <path d="M 62 29 L 64 25" stroke="#9333ea" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+                    <path d="M 68 48 L 72 49" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
+                    <path d="M 67 46 L 70 45" stroke="#ec4899" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+                    <path d="M 67 50 L 71 52" stroke="#9333ea" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+                    <path d="M 52 48 L 48 49" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
+                    <path d="M 53 46 L 50 45" stroke="#ec4899" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+                    <path d="M 53 50 L 49 52" stroke="#9333ea" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+                    
+                    <circle cx="60" cy="25" r="1" fill="#a855f7" opacity="0.5"/>
+                    <circle cx="70" cy="47" r="0.8" fill="#ec4899" opacity="0.4"/>
+                    <circle cx="50" cy="47" r="0.8" fill="#9333ea" opacity="0.4"/>
+                </svg>
+                <span>EyeFlame</span>
+            </div>
+            <p class="contact-info">
+                Founded and developed by <strong>Farzad Rahim Khanian</strong><br>
+                Research inquiries: <a href="mailto:farzad@eyeflame.io">farzad@eyeflame.io</a>
+            </p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 2rem;">
+                © 2025 EyeFlame. Advanced behavioral analysis toolkit.
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // Filter projects by category
-        function filterProjects(category) {
-            const tabs = document.querySelectorAll('.category-tab');
-            const projects = document.querySelectorAll('.project-card');
+        // Animated background particles
+        function createFlameParticles() {
+            const bg = document.getElementById('bgAnimation');
+            const particleCount = 50;
             
-            // Update active tab
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.textContent.toLowerCase().includes(category) || 
-                    (category === 'all' && tab.textContent === 'All Projects')) {
-                    tab.classList.add('active');
-                }
-            });
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'flame-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                bg.appendChild(particle);
+            }
+
+            // Add neural network lines
+            const lineCount = 8;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'neural-line';
+                line.style.width = (200 + Math.random() * 300) + 'px';
+                line.style.top = (Math.random() * 100) + '%';
+                line.style.animationDelay = (Math.random() * 15) + 's';
+                line.style.animationDuration = (10 + Math.random() * 10) + 's';
+                bg.appendChild(line);
+            }
+
+            // Add gradient orbs
+            const orbCount = 3;
+            const colors = [
+                'radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent)',
+                'radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent)',
+                'radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent)'
+            ];
             
-            // Filter projects
-            projects.forEach(project => {
-                if (category === 'all' || project.dataset.category === category) {
-                    project.style.display = 'block';
-                    project.style.animation = 'fadeInUp 0.5s ease-out';
-                } else {
-                    project.style.display = 'none';
-                }
-            });
+            for (let i = 0; i < orbCount; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'gradient-orb';
+                orb.style.width = (150 + Math.random() * 200) + 'px';
+                orb.style.height = orb.style.width;
+                orb.style.left = (Math.random() * 100) + '%';
+                orb.style.top = (Math.random() * 100) + '%';
+                orb.style.background = colors[i];
+                orb.style.animationDelay = (Math.random() * 20) + 's';
+                orb.style.animationDuration = (15 + Math.random() * 10) + 's';
+                bg.appendChild(orb);
+            }
         }
 
-        // Smooth scrolling for navigation links
+        createFlameParticles();
+
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -773,17 +1108,7 @@
             });
         });
 
-        // Add parallax effect to hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero-content');
-            if (parallax) {
-                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
-                parallax.style.opacity = 1 - scrolled / 800;
-            }
-        });
-
-        // Animate elements on scroll
+        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
@@ -792,13 +1117,13 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
                 }
             });
         }, observerOptions);
 
-        // Observe all project cards and skill categories
-        document.querySelectorAll('.project-card, .skill-category, .timeline-item').forEach(el => {
+        document.querySelectorAll('.model-card, .feature').forEach(el => {
+            el.style.opacity = '0';
             observer.observe(el);
         });
     </script>
