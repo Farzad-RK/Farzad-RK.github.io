@@ -1,1131 +1,1105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EyeFlame - Advanced AI-powered behavioral analysis toolkit for gaze estimation, head pose tracking, and cognitive assessment">
-    <title>EyeFlame | Behavioral Analysis Toolkit</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-purple: #a855f7;
-            --secondary-purple: #9333ea;
-            --dark-purple: #7e22ce;
-            --accent-pink: #ec4899;
-            --bg-light: #f1f5f9;
-            --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Animated Background */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
-            overflow: hidden;
-        }
-
-        .flame-particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, var(--primary-purple), transparent);
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out;
-            filter: blur(1px);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -30px) scale(1.2); }
-            50% { transform: translate(-20px, -60px) scale(0.8); }
-            75% { transform: translate(-30px, -30px) scale(1.1); }
-        }
-
-        /* Neural Network Lines */
-        .neural-line {
-            position: absolute;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-purple), transparent);
-            opacity: 0.2;
-            animation: slideAcross 15s infinite linear;
-        }
-
-        @keyframes slideAcross {
-            0% { transform: translateX(-100%); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
-            100% { transform: translateX(100vw); opacity: 0; }
-        }
-
-        /* Gradient Orbs */
-        .gradient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
-            animation: moveOrb 20s infinite ease-in-out;
-        }
-
-        @keyframes moveOrb {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(100px, -100px) scale(1.2); }
-            66% { transform: translate(-100px, 100px) scale(0.8); }
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-            padding: 1rem 0;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-purple);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-purple);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6rem 2rem 2rem;
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            text-align: center;
-            animation: fadeInUp 1s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.1;
-        }
-
-        .hero .subtitle {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
-            color: white;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--primary-purple);
-            border: 2px solid var(--primary-purple);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-purple);
-            color: white;
-        }
-
-        /* Section */
-        .section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 4rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Models Grid */
-        .models-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .model-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 2.5rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .model-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-purple), var(--accent-pink));
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .model-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
-            border-color: var(--primary-purple);
-        }
-
-        .model-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .status-ready {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .status-wip {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        .model-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .model-card p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-
-        .metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .metric {
-            padding: 1rem;
-            background: var(--bg-light);
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            display: block;
-        }
-
-        .metric-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-
-        .tech-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .tech-tag {
-            padding: 0.4rem 0.9rem;
-            background: rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--primary-purple);
-            font-weight: 500;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 0.8rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-github {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            background: var(--text-primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .btn-github:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.3);
-            background: #0f172a;
-        }
-
-        .btn-github svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .model-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .model-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-        }
-
-        .detail-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-        }
-
-        .detail-list li {
-            padding: 0.5rem 0;
-            color: var(--text-secondary);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .detail-list li:last-child {
-            border-bottom: none;
-        }
-
-        .detail-list strong {
-            color: var(--primary-purple);
-            font-weight: 600;
-        }
-
-        .highlight-box {
-            background: rgba(168, 85, 247, 0.1);
-            border-left: 3px solid var(--primary-purple);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .highlight-box p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Features */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .feature h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .feature p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .contact-info {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .contact-info a {
-            color: var(--primary-purple);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .contact-info a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero .subtitle {
-                font-size: 1.2rem;
-            }
-
-            .models-grid,
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                display: none;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Farzad Rahimkhanian — Software Engineer & R&D specialist. Portfolio of projects in AI/ML, full-stack development, computer vision, and systems engineering.">
+  <title>Farzad Rahim Khanian — Portfolio</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple:      #a855f7;
+      --purple-dark: #7e22ce;
+      --pink:        #ec4899;
+      --bg:          #f8f7ff;
+      --surface:     #ffffff;
+      --border:      #e9e4f8;
+      --text:        #18141f;
+      --muted:       #6b6480;
+      --tag-bg:      rgba(168, 85, 247, 0.08);
+      --tag-border:  rgba(168, 85, 247, 0.25);
+      --accent-line: linear-gradient(90deg, var(--purple), var(--pink));
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248, 247, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .nav-logo svg { width: 32px; height: 22px; }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.8rem;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--purple); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 2rem 80px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
+      align-items: start;
+    }
+    .hero-text { max-width: 680px; }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 1.4rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: var(--accent-line);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-bio {
+      color: var(--muted);
+      font-size: 0.975rem;
+      line-height: 1.8;
+    }
+    .hero-bio p + p { margin-top: 0.75rem; }
+    .hero-links {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1.8rem;
+    }
+    .hero-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    /* avatar */
+    .hero-avatar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding-top: 8px;
+    }
+    .avatar-img {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      background: var(--tag-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .avatar-img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(168,85,247,0.05),
+        rgba(168,85,247,0.05) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+    }
+    .avatar-img svg {
+      width: 52px;
+      height: 52px;
+      color: var(--purple);
+      opacity: 0.4;
+      position: relative;
+      z-index: 1;
+    }
+    .avatar-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .link-primary {
+      background: var(--purple);
+      color: #fff;
+    }
+    .link-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+    .link-ghost {
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      background: var(--surface);
+    }
+    .link-ghost:hover { border-color: var(--purple); color: var(--purple); }
+
+    /* ── LAYOUT ── */
+    .page-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 100px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-head {
+      margin-top: 72px;
+      margin-bottom: 32px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .section-head h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .section-count {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── DEMO SHOWCASE ── */
+    .demo-showcase {
+      width: 100%;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168,85,247,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 10% 100%, rgba(236,72,153,0.08) 0%, transparent 60%),
+        linear-gradient(175deg, #f0ebff 0%, #f8f4ff 40%, #fdf8ff 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+      border-top: 1px solid rgba(168,85,247,0.15);
+      border-bottom: 1px solid rgba(168,85,247,0.12);
+    }
+    .demo-showcase-label {
+      width: 100%;
+      max-width: 1100px;
+      padding: 32px 2rem 20px;
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .demo-showcase-label h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+    .demo-showcase-label p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .demo-video-wrap {
+      width: 100%;
+      max-width: 1100px;
+      padding: 0 2rem;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(168,85,247,0.15), 0 0 0 1px rgba(168,85,247,0.12);
+    }
+    .demo-video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+    .demo-caption {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.4rem;
+    }
+    .projects-grid.wide {
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.6rem;
+      transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-line);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .card:hover { 
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(168,85,247,0.1);
+      border-color: rgba(168,85,247,0.3);
+    }
+    .card:hover::after { transform: scaleX(1); }
+
+    /* featured card spans full width */
+    .card-featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .card-featured .card-media {
+      order: 2;
+      background: #0a0a0a;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 9/16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 680px;
+    }
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      color: var(--purple);
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(168,85,247,0.04),
+        rgba(168,85,247,0.04) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      border: 2px dashed var(--tag-border);
+      border-radius: 10px;
+      min-height: 300px;
+    }
+    .video-placeholder svg { opacity: 0.5; }
+    .video-placeholder span { color: var(--muted); font-size: 0.8rem; }
+
+    .card-body { order: 1; }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      margin-bottom: 0.9rem;
+    }
+    .badge-research  { background: rgba(168,85,247,0.1); color: var(--purple); }
+    .badge-work      { background: rgba(16,185,129,0.1); color: #059669; }
+    .badge-systems   { background: rgba(234,88,12,0.1);  color: #ea580c; }
+    .badge-mobile    { background: rgba(59,130,246,0.1); color: #2563eb; }
+    .badge-game      { background: rgba(236,72,153,0.1); color: #db2777; }
+    .badge-early     { background: rgba(100,116,139,0.1); color: #475569; }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+    }
+    .card-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+      font-style: italic;
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    /* metric row for highlighted stats */
+    .card-metrics {
+      display: flex;
+      gap: 1.2rem;
+      margin: 0.9rem 0 1rem;
+      flex-wrap: wrap;
+    }
+    .metric-pill {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+    .metric-pill strong {
+      color: var(--purple);
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .metric-pill span {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .card-points {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+    .card-points li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 0.25rem 0 0.25rem 1.1rem;
+      position: relative;
+      line-height: 1.55;
+    }
+    .card-points li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--purple);
+      font-size: 0.75rem;
+      top: 0.32rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 20px;
+      color: var(--purple);
+    }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.35rem 0.8rem;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .card-link:hover { border-color: var(--purple); color: var(--purple); }
+    .card-link svg { width: 14px; height: 14px; }
+    .card-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    /* ── WORK EXPERIENCE (timeline style) ── */
+    .work-list { display: flex; flex-direction: column; gap: 1.4rem; }
+    .work-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.6rem 1.8rem;
+      transition: box-shadow 0.2s;
+    }
+    .work-card:hover { box-shadow: 0 6px 24px rgba(168,85,247,0.08); }
+    .work-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.3rem;
+    }
+    .work-title { font-size: 1rem; font-weight: 700; }
+    .work-period { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+    .work-company { font-size: 0.875rem; color: var(--purple); font-weight: 600; margin-bottom: 1rem; }
+    .work-subhead { 
+      font-size: 0.78rem; 
+      font-weight: 700; 
+      letter-spacing: 0.06em;
+      text-transform: uppercase; 
+      color: var(--muted);
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .work-points {
+      list-style: none;
+      margin-bottom: 0.5rem;
+    }
+    .work-points li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 0.22rem 0 0.22rem 1.1rem;
+      position: relative;
+      line-height: 1.55;
+    }
+    .work-points li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--purple);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.4rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple); }
+    .footer-copy { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── GITHUB SVG shared ── */
+    .gh-icon { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .card-featured { grid-template-columns: 1fr; }
+      .card-featured .card-media { order: -1; aspect-ratio: 9/16; max-height: 420px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .hero h1 { font-size: 2rem; }
+      .hero-avatar { flex-direction: row; justify-content: flex-start; }
+      .avatar-img { width: 72px; height: 72px; }
+      .avatar-img svg { width: 28px; height: 28px; }
+      .avatar-label { display: none; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="bg-animation" id="bgAnimation"></div>
 
-    <nav>
-        <div class="nav-container">
-            <div class="logo">
-                <svg class="logo-icon" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#9333ea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-                        </linearGradient>
-                        <filter id="glow">
-                            <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    
-                    <!-- Eye outline -->
-                    <path d="M 10 40 Q 10 20, 60 20 Q 110 20, 110 40 Q 110 60, 60 60 Q 10 60, 10 40 Z" 
-                          fill="none" 
-                          stroke="url(#logoGradient)" 
-                          stroke-width="2"
-                          opacity="0.9"/>
-                    
-                    <!-- Iris circle -->
-                    <circle cx="60" cy="40" r="18" 
-                            fill="none" 
-                            stroke="url(#logoGradient)" 
-                            stroke-width="1.5"
-                            opacity="0.7"/>
-                    
-                    <!-- Triangle in center (prism) -->
-                    <path d="M 60 28 L 68 48 L 52 48 Z" 
-                          fill="none" 
-                          stroke="url(#logoGradient)" 
-                          stroke-width="2.5"
-                          filter="url(#glow)"/>
-                    
-                    <!-- Flame particles around triangle -->
-                    <!-- Upper flames -->
-                    <path d="M 60 28 L 60 23" 
-                          stroke="#a855f7" 
-                          stroke-width="1.5" 
-                          opacity="0.8"
-                          stroke-linecap="round"/>
-                    <path d="M 58 29 L 56 25" 
-                          stroke="#ec4899" 
-                          stroke-width="1" 
-                          opacity="0.7"
-                          stroke-linecap="round"/>
-                    <path d="M 62 29 L 64 25" 
-                          stroke="#9333ea" 
-                          stroke-width="1" 
-                          opacity="0.7"
-                          stroke-linecap="round"/>
-                    
-                    <!-- Right flames -->
-                    <path d="M 68 48 L 72 49" 
-                          stroke="#a855f7" 
-                          stroke-width="1.5" 
-                          opacity="0.8"
-                          stroke-linecap="round"/>
-                    <path d="M 67 46 L 70 45" 
-                          stroke="#ec4899" 
-                          stroke-width="1" 
-                          opacity="0.6"
-                          stroke-linecap="round"/>
-                    <path d="M 67 50 L 71 52" 
-                          stroke="#9333ea" 
-                          stroke-width="1" 
-                          opacity="0.6"
-                          stroke-linecap="round"/>
-                    
-                    <!-- Left flames -->
-                    <path d="M 52 48 L 48 49" 
-                          stroke="#a855f7" 
-                          stroke-width="1.5" 
-                          opacity="0.8"
-                          stroke-linecap="round"/>
-                    <path d="M 53 46 L 50 45" 
-                          stroke="#ec4899" 
-                          stroke-width="1" 
-                          opacity="0.6"
-                          stroke-linecap="round"/>
-                    <path d="M 53 50 L 49 52" 
-                          stroke="#9333ea" 
-                          stroke-width="1" 
-                          opacity="0.6"
-                          stroke-linecap="round"/>
-                    
-                    <!-- Subtle flame wisps -->
-                    <circle cx="60" cy="25" r="1" fill="#a855f7" opacity="0.5"/>
-                    <circle cx="70" cy="47" r="0.8" fill="#ec4899" opacity="0.4"/>
-                    <circle cx="50" cy="47" r="0.8" fill="#9333ea" opacity="0.4"/>
-                </svg>
-                <span>EyeFlame</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#models">Models</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#research">Research</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   style="stop-color:#a855f7"/>
+            <stop offset="50%"  style="stop-color:#9333ea"/>
+            <stop offset="100%" style="stop-color:#ec4899"/>
+          </linearGradient>
+        </defs>
+        <path d="M 10 40 Q 10 20, 60 20 Q 110 20, 110 40 Q 110 60, 60 60 Q 10 60, 10 40 Z"
+              fill="none" stroke="url(#lg)" stroke-width="2" opacity="0.9"/>
+        <circle cx="60" cy="40" r="18" fill="none" stroke="url(#lg)" stroke-width="1.5" opacity="0.7"/>
+        <path d="M 60 28 L 68 48 L 52 48 Z" fill="none" stroke="url(#lg)" stroke-width="2.5"/>
+        <path d="M 60 28 L 60 23" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
+        <path d="M 58 29 L 56 25" stroke="#ec4899" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+        <path d="M 62 29 L 64 25" stroke="#9333ea" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+      </svg>
+      Farzad Rahimkhanian
+    </a>
+    <ul class="nav-links">
+      <li><a href="#research">Research</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#systems">Systems</a></li>
+      <li><a href="#other">Other</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-text">
+    <h1>About me</h1>
+    <div class="hero-bio">
+      <p>
+        I've been writing code since I was 14 — started with Java, purely for the love of it,
+        with zero intention of making money from it. Some of my best memories are from
+        the early Android modding days on XDA, porting ROMs and writing custom kernels
+        with a community of people who taught me how to program.
+      </p>
+      <p>
+        I try my best to give back to the open source community that taught me everything.
+        I believe science and software should be accessible to anyone who shares the enthusiasm,
+        not locked behind paywalls or institutions.
+      </p>
+    </div>
+    <div class="hero-links">
+      <a href="https://github.com/Farzad-RK" class="link-primary" target="_blank">
+        <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/farzad-rahim-khanian-90b024231/" class="link-ghost" target="_blank">LinkedIn</a>
+      <a href="https://eyeflame.io/" class="link-ghost" target="_blank">eyeflame.io</a>
+      <a href="mailto:farzad@eyeflame.io" class="link-ghost">farzad@eyeflame.io</a>
+    </div>
+  </div>
+
+</header>
+
+<!-- DEMO SHOWCASE -->
+<section class="demo-showcase">
+  <div class="demo-showcase-label">
+    <h2>On-Device Gaze &amp; Pupillometry</h2>
+    <p>Real-time &amp; Offline Analysis — Demo</p>
+  </div>
+  <div class="demo-video-wrap">
+    <video class="demo-video" src="demo.mp4" autoplay loop muted playsinline></video>
+  </div>
+  <p class="demo-caption">Running entirely on-device · no server · no wearable hardware</p>
+</section>
+
+<main class="page-body">
+
+  <!-- ── RESEARCH PROJECTS ── -->
+  <div class="section-head" id="research">
+    <h2>Research &amp; AI Projects</h2>
+    <span class="section-count">9 projects</span>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- On-Device Gaze -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Android</span>
+      <h3>On-Device Gaze &amp; Pupillometry — Real-time &amp; Offline Analysis</h3>
+      <p>
+        Full on-device eye tracking pipeline running entirely from the front camera —
+        no server, no wearable hardware. Re-engineered 6DRepNet on a mobile-optimised
+        RepNeXt-M4 backbone, then ported the 3DeepVOG 3D eye geometry pipeline to Kotlin
+        with GPU-accelerated TFLite.
+      </p>
+      <div class="card-metrics">
+        <div class="metric-pill"><strong>3.91°</strong><span>MAE on AFLW2000</span></div>
+        <div class="metric-pill"><strong>13.8M</strong><span>Parameters</span></div>
+        <div class="metric-pill"><strong>~32%</strong><span>Smaller than RepVGG-B1</span></div>
+      </div>
+      <ul class="card-points">
+        <li>Outperforms both 6DRepNet baselines (RepVGG-B1 4.05°, ResNet50 3.97°) with fewer parameters</li>
+        <li>Full 3D eye geometry reimplemented in Kotlin; neural components exported to GPU-accelerated TFLite</li>
+        <li>Parity test harness caught a geometric sign bug, collapsing gaze error from 73° to ~1e-4°</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Kotlin</span><span class="tag">ONNX</span><span class="tag">TFLite</span>
+          <span class="tag">PyTorch</span><span class="tag">CameraX</span><span class="tag">MediaPipe</span>
         </div>
-    </nav>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Behavioral analysis toolkit<br>for edge devices</h1>
-            <p class="subtitle">Advanced gaze estimation, head pose tracking, and cognitive assessment toolkit for real-world applications</p>
-            <div class="cta-buttons">
-                <a href="#models" class="btn btn-primary">Explore Models</a>
-                <a href="#research" class="btn btn-secondary">View Research</a>
-            </div>
+        <div class="card-links">
+          <a href="https://github.com/Farzad-RK/RayNet/tree/feature/head_pose_fusion/sixdrepnet" class="card-link" target="_blank">
+            <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <section id="models" class="section">
-        <h2 class="section-title">Production-Ready Models</h2>
-        <p class="section-subtitle">State-of-the-art AI models optimized for mobile and edge devices</p>
-
-        <div class="models-grid">
-            <div class="model-card">
-                <span class="status-badge status-ready">✓ Production Ready</span>
-                <h3>6D Head Pose Estimation</h3>
-                <p>State-of-the-art head pose tracking using continuous 6D rotation representation. Outperforms RepVGG-B1 baseline while using 35% fewer parameters through RepNeXt-M4 architecture.</p>
-                
-                <div class="metrics">
-                    <div class="metric">
-                        <span class="metric-value">3.91°</span>
-                        <span class="metric-label">Mean Angular Error</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">13.8M</span>
-                        <span class="metric-label">Parameters</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">35%</span>
-                        <span class="metric-label">Size Reduction</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">Mobile</span>
-                        <span class="metric-label">Optimized</span>
-                    </div>
-                </div>
-
-                <ul class="detail-list">
-                    <li><strong>Architecture:</strong> RepNeXt-M4 backbone with 6D rotation output</li>
-                    <li><strong>Training:</strong> AFLW2000 test set, 300W-LP training set</li>
-                    <li><strong>Method:</strong> Gram-Schmidt orthonormalization for SO(3)</li>
-                    <li><strong>Loss:</strong> Geodesic distance on rotation manifold</li>
-                    <li><strong>Comparison:</strong> 3.91° vs 3.97° (RepVGG-B1 20M params)</li>
-                </ul>
-
-                <div class="highlight-box">
-                    <p><strong>Key Innovation:</strong> Replaces Euler angles with continuous 6D representation to avoid gimbal lock, ensuring stable rotations across full ±80° yaw/pitch range.</p>
-                </div>
-
-                <div class="tech-tags">
-                    <span class="tech-tag">RepNeXt-M4</span>
-                    <span class="tech-tag">6D Rotation</span>
-                    <span class="tech-tag">Geodesic Loss</span>
-                    <span class="tech-tag">Mobile Edge</span>
-                </div>
-
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/RayNet/tree/main/sixdrepnet" class="btn-github" target="_blank">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                    <a href="https://huggingface.co/phorosyne/6DRepNet-RepNeXt-M4" class="model-link" target="_blank">
-                        🤗 Hugging Face
-                    </a>
-                </div>
-            </div>
-
-            <div class="model-card">
-                <span class="status-badge status-wip">⚙ In Development</span>
-                <h3>RayNet: Multi-View Gaze System</h3>
-                <p>Stereo gaze estimation architecture leveraging 9-camera multi-view consistency. Combines PANet feature pyramid with EyeFLAME module for joint 2D-3D supervision resolving depth ambiguity.</p>
-                
-                <div class="metrics">
-                    <div class="metric">
-                        <span class="metric-value">95.48px</span>
-                        <span class="metric-label">2D Iris Error</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">14.89cm</span>
-                        <span class="metric-label">3D Eyeball Error</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">9 Views</span>
-                        <span class="metric-label">Multi-Camera</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">30.22°</span>
-                        <span class="metric-label">Gaze Angle Error</span>
-                    </div>
-                </div>
-
-                <ul class="detail-list">
-                    <li><strong>Dataset:</strong> GazeGene (1,008,000 images, 56 subjects)</li>
-                    <li><strong>Architecture:</strong> RepNeXt + PANet + EyeFLAME heads</li>
-                    <li><strong>Multi-Task:</strong> Gaze vector, depth, head pose, pupil center</li>
-                    <li><strong>Training:</strong> 3-phase progressive strategy (2D→3D)</li>
-                    <li><strong>Camera Setup:</strong> 9 synchronized views at 5m distance</li>
-                </ul>
-
-                <div class="highlight-box">
-                    <p><strong>Progressive Training:</strong> Phase 1 focuses on 2D projection (weight=1.0), Phase 2 introduces 3D (weight=0.1), Phase 3 balances both (weights=0.5) for optimal convergence.</p>
-                </div>
-
-                <div class="tech-tags">
-                    <span class="tech-tag">Stereo Vision</span>
-                    <span class="tech-tag">PANet FPN</span>
-                    <span class="tech-tag">Multi-Task MTL</span>
-                    <span class="tech-tag">GazeGene</span>
-                </div>
-
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/RayNet" class="btn-github" target="_blank">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                </div>
-            </div>
-
-            <div class="model-card">
-                <span class="status-badge status-wip">⚙ Work in Progress</span>
-                <h3>EyeFLAME: 3D Eye Structure</h3>
-                <p>FLAME-inspired geometric module integrated with RayNet for anatomical eye reconstruction using multiple camera streams. Predicts 3D eyeball structures with true perspective projection leveraging multi-view consistency.</p>
-                
-                <div class="metrics">
-                    <div class="metric">
-                        <span class="metric-value">200</span>
-                        <span class="metric-label">Iris Landmarks</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">15.11cm</span>
-                        <span class="metric-label">3D Iris Error</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">9 Cameras</span>
-                        <span class="metric-label">Multi-View</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">3D</span>
-                        <span class="metric-label">Perspective</span>
-                    </div>
-                </div>
-
-                <ul class="detail-list">
-                    <li><strong>Architecture:</strong> Module within RayNet for multi-camera processing</li>
-                    <li><strong>Output:</strong> Eyeball centers, pupil centers, 100 iris points per eye</li>
-                    <li><strong>Method:</strong> 3D perspective model with multi-view geometry</li>
-                    <li><strong>Supervision:</strong> Joint 2D-3D loss with angular constraints</li>
-                    <li><strong>Geometry:</strong> Subject-specific kappa angles and anatomical radii</li>
-                </ul>
-
-                <div class="highlight-box">
-                    <p><strong>Multi-View Approach:</strong> Utilizes RayNet architecture to process 9 synchronized camera streams, resolving depth ambiguity through geometric triangulation rather than single-view weak perspective.</p>
-                </div>
-
-                <div class="tech-tags">
-                    <span class="tech-tag">RayNet Integration</span>
-                    <span class="tech-tag">3D Perspective</span>
-                    <span class="tech-tag">Multi-Camera</span>
-                    <span class="tech-tag">FLAME-Style</span>
-                </div>
-
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/RayNet/tree/feature/iris_geometrical_model/RayNet/EyeFLAME" class="btn-github" target="_blank">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                </div>
-            </div>
-
-            <div class="model-card">
-                <span class="status-badge status-wip">⚙ In Development</span>
-                <h3>ARGaze Gaze Point Estimation</h3>
-                <p>Single-camera gaze point estimation on target plane using RepNeXt-M3. Training on ARGaze dataset with fixed 300cm depth assumption for desktop interaction scenarios.</p>
-                
-                <div class="metrics">
-                    <div class="metric">
-                        <span class="metric-value">9.66°</span>
-                        <span class="metric-label">Best MAE</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">7.8M</span>
-                        <span class="metric-label">Parameters</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">2000</span>
-                        <span class="metric-label">Samples/Subject</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">30</span>
-                        <span class="metric-label">Epochs</span>
-                    </div>
-                </div>
-
-                <ul class="detail-list">
-                    <li><strong>Dataset:</strong> ARGaze (1.3M image pairs from 25 subjects)</li>
-                    <li><strong>Architecture:</strong> RepNeXt-M3 backbone (lightweight)</li>
-                    <li><strong>Task:</strong> 2D gaze point projection on fixed-depth plane</li>
-                    <li><strong>Resolution:</strong> 32×32 eye images at 50fps</li>
-                    <li><strong>Application:</strong> Desktop/laptop gaze tracking</li>
-                </ul>
-
-                <div class="highlight-box">
-                    <p><strong>Ray Casting:</strong> Gaze point calculated via ray intersection: pupil center + t·gaze_direction where t = (d_plane - p_z) / v_z for fixed depth d=300cm.</p>
-                </div>
-
-                <div class="tech-tags">
-                    <span class="tech-tag">RepNeXt-M3</span>
-                    <span class="tech-tag">ARGaze</span>
-                    <span class="tech-tag">Single View</span>
-                    <span class="tech-tag">Desktop Tracking</span>
-                </div>
-
-                <div class="project-links">
-                    <a href="https://github.com/Farzad-RK/RayNet/tree/main/gaze_estimation" class="btn-github" target="_blank">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                </div>
-            </div>
+    <!-- RayNet -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Machine vision </span>
+      <h3>RayNet — Multi-Task Gaze, Landmark &amp; Pupillometry</h3>
+      <p>
+        Lightweight multi-task network predicting 3D gaze, iris/pupil landmarks, and metric
+        pupil diameter from a single normalised eye image using a RepNeXt + PANet architecture.
+      </p>
+      <ul class="card-points">
+        <li>Optical axis prediction with calibratable kappa handling; sub-pixel landmark regression via heatmaps + soft-argmax</li>
+        <li>Resolves adversarial multi-task dynamics with gradient-isolated head-pose backbone (6D rotation + 3D translation)</li>
+        <li>Production-level dataset pipelines built with MosaicML on Databricks</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">PyTorch</span><span class="tag">RepNeXt</span>
+          <span class="tag">PANet</span><span class="tag">MosaicML</span><span class="tag">GazeGene</span>
         </div>
-    </section>
+        <a href="https://github.com/Farzad-RK/RayNet/tree/feature/openeds_torsion_model" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-    <section id="features" class="section">
-        <h2 class="section-title">Built for Real-World Applications</h2>
-        <p class="section-subtitle">From mobile devices to cognitive analysis systems</p>
-
-        <div class="features-grid">
-            <div class="feature">
-                <div class="feature-icon">🎯</div>
-                <h3>Mobile Optimized</h3>
-                <p>Lightweight architectures designed for edge deployment with minimal latency and maximum accuracy.</p>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">🧠</div>
-                <h3>Cognitive Assessment</h3>
-                <p>Analyze iris patterns, pupil dynamics, and gaze behavior for cognitive load estimation.</p>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">📐</div>
-                <h3>Geometric Precision</h3>
-                <p>True 3D reconstruction of eye anatomy with accurate depth perception and multi-view consistency.</p>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">⚡</div>
-                <h3>Real-Time Processing</h3>
-                <p>Optimized inference pipelines for real-time applications in VR, AR, and interactive systems.</p>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">🔬</div>
-                <h3>Research Validated</h3>
-                <p>Models trained on state-of-the-art datasets including GazeGene, ETH-XGaze, and ARGaze.</p>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">🎨</div>
-                <h3>Modular Design</h3>
-                <p>Flexible architecture supporting multiple backbones and easy integration into existing pipelines.</p>
-            </div>
+    <!-- COVID-19 -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Machine vision</span>
+      <h3>COVID-19 Detection &amp; Content-Based Image Retrieval</h3>
+      <p>
+        CT scan-based COVID-19 detection using transfer learning on VGG16, combined
+        with a CBIR system that achieves high accuracy using only 18% of features via chi² selection.
+      </p>
+      <ul class="card-points">
+        <li>U-Net lung segmentation with CLAHE enhancement and Hounsfield adjustment</li>
+        <li>CBIR system achieving high accuracy using only 18% of original features</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">VGG16</span><span class="tag">U-Net</span>
+          <span class="tag">Keras</span><span class="tag">CUDA</span><span class="tag">scikit-learn</span>
         </div>
-    </section>
+        <a href="https://github.com/Farzad-RK/covid-19-search-engine" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-    <section id="research" class="section">
-        <h2 class="section-title">Research Foundation</h2>
-        <p class="section-subtitle">Built on cutting-edge computer vision and deep learning research</p>
-
-        <div class="model-card" style="max-width: 800px; margin: 0 auto;">
-            <h3>Key Innovations</h3>
-            <p style="margin-bottom: 2rem;">EyeFlame combines multiple breakthrough techniques to achieve superior performance:</p>
-            
-            <ul style="text-align: left; color: var(--text-secondary); line-height: 2; margin-bottom: 2rem;">
-                <li><strong>6D Rotation Representation:</strong> Continuous rotation matrices via Gram-Schmidt orthonormalization</li>
-                <li><strong>Weak Perspective Projection:</strong> Resolving depth ambiguity through joint 2D-3D supervision</li>
-                <li><strong>Multi-View Consistency:</strong> Leveraging 9-camera angles for geometric precision</li>
-                <li><strong>Progressive Training:</strong> Three-phase strategy balancing 2D and 3D losses</li>
-                <li><strong>Anatomical Priors:</strong> FLAME-inspired parameterization of eye structures</li>
-            </ul>
-
-            <div class="tech-tags">
-                <span class="tech-tag">PyTorch</span>
-                <span class="tech-tag">Computer Vision</span>
-                <span class="tech-tag">RepNeXt</span>
-                <span class="tech-tag">Multi-Task Learning</span>
-            </div>
+    <!-- IMU -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Biomedical</span>
+      <h3>IMU Chair Stand Test Biomedical Toolkit</h3>
+      <p>
+        Android app + MATLAB pipeline for clinical chair stand test analysis using
+        IMU sensor fusion.
+      </p>
+      <ul class="card-points">
+        <li>100Hz+ sensor sampling via low-level Android API</li>
+        <li>Kalman filter-based sensor fusion and quaternion-based world coordinate rotation</li>
+        <li>Algorithm for removal of gravity vestiges from raw acceleration signal</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Android</span><span class="tag">MATLAB</span>
+          <span class="tag">Kalman Filter</span><span class="tag">Signal Fusion</span>
         </div>
-    </section>
+        <a href="https://github.com/Farzad-RK/IMU-Chair-Stand-Test-Biomedical-Analysis" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="logo" style="margin-bottom: 1.5rem; justify-content: center;">
-                <svg class="logo-icon" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#9333ea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-                        </linearGradient>
-                        <filter id="glow2">
-                            <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    
-                    <path d="M 10 40 Q 10 20, 60 20 Q 110 20, 110 40 Q 110 60, 60 60 Q 10 60, 10 40 Z" 
-                          fill="none" 
-                          stroke="url(#logoGradient2)" 
-                          stroke-width="2"
-                          opacity="0.9"/>
-                    <circle cx="60" cy="40" r="18" 
-                            fill="none" 
-                            stroke="url(#logoGradient2)" 
-                            stroke-width="1.5"
-                            opacity="0.7"/>
-                    <path d="M 60 28 L 68 48 L 52 48 Z" 
-                          fill="none" 
-                          stroke="url(#logoGradient2)" 
-                          stroke-width="2.5"
-                          filter="url(#glow2)"/>
-                    
-                    <path d="M 60 28 L 60 23" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
-                    <path d="M 58 29 L 56 25" stroke="#ec4899" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
-                    <path d="M 62 29 L 64 25" stroke="#9333ea" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
-                    <path d="M 68 48 L 72 49" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
-                    <path d="M 67 46 L 70 45" stroke="#ec4899" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
-                    <path d="M 67 50 L 71 52" stroke="#9333ea" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
-                    <path d="M 52 48 L 48 49" stroke="#a855f7" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
-                    <path d="M 53 46 L 50 45" stroke="#ec4899" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
-                    <path d="M 53 50 L 49 52" stroke="#9333ea" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
-                    
-                    <circle cx="60" cy="25" r="1" fill="#a855f7" opacity="0.5"/>
-                    <circle cx="70" cy="47" r="0.8" fill="#ec4899" opacity="0.4"/>
-                    <circle cx="50" cy="47" r="0.8" fill="#9333ea" opacity="0.4"/>
-                </svg>
-                <span>EyeFlame</span>
-            </div>
-            <p class="contact-info">
-                Founded and developed by <strong>Farzad Rahim Khanian</strong><br>
-                Research inquiries: <a href="mailto:farzad@eyeflame.io">farzad@eyeflame.io</a>
-            </p>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 2rem;">
-                © 2025 EyeFlame. Advanced behavioral analysis toolkit.
-            </p>
+    <!-- OpenFace -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · C++</span>
+      <h3>OpenFace Real-Time Extension</h3>
+      <p>
+        Extended OpenFace to stream real-time head pose and gaze vectors via WebSocket,
+        enabling integration with external systems without modifying the core library.
+      </p>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">C++</span><span class="tag">OpenFace</span>
+          <span class="tag">WebSocket</span><span class="tag">3D Geometry</span>
         </div>
-    </footer>
+        <a href="https://github.com/Farzad-RK/OpenFace-Realtime" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-    <script>
-        // Animated background particles
-        function createFlameParticles() {
-            const bg = document.getElementById('bgAnimation');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'flame-particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-                bg.appendChild(particle);
-            }
+    <!-- Audio -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Audio</span>
+      <h3>Audio Source Separation in Music</h3>
+      <p>
+        Vocal extraction model using bidirectional LSTM with STFT processing and
+        mask-based source separation. Data augmentation addressed the scarcity of
+        labelled open-source music datasets.
+      </p>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">PyTorch</span><span class="tag">BLSTM</span>
+          <span class="tag">STFT</span><span class="tag">Torchaudio</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/vocal-extraction" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-            // Add neural network lines
-            const lineCount = 8;
-            for (let i = 0; i < lineCount; i++) {
-                const line = document.createElement('div');
-                line.className = 'neural-line';
-                line.style.width = (200 + Math.random() * 300) + 'px';
-                line.style.top = (Math.random() * 100) + '%';
-                line.style.animationDelay = (Math.random() * 15) + 's';
-                line.style.animationDuration = (10 + Math.random() * 10) + 's';
-                bg.appendChild(line);
-            }
+    <!-- Process Mining -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · Data Science</span>
+      <h3>Process Mining for Emergency Department Optimization</h3>
+      <p class="card-meta">Università degli Studi di Milano</p>
+      <p>
+        Applied process mining to real ED event logs to discover, analyse, and redesign patient
+        care pathways — combining multi-objective model selection with patient clustering to
+        surface actionable, cluster-specific recommendations.
+      </p>
+      <ul class="card-points">
+        <li>Pareto-based multi-objective optimisation across 27 process model configurations (Inductive, Heuristics, Alpha Miner), selecting the best model at F1 = 0.933 and generalisation = 0.974</li>
+        <li>K-Medoids clustering with Hamming distance on 12-dimensional binary clinical profiles reduced the variant space by 76% (1,000+ → 238 patterns), enabling cluster-specific process redesign</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">PM4Py</span>
+          <span class="tag">Petri Nets</span><span class="tag">K-Medoids</span>
+          <span class="tag">Pareto Optimization</span><span class="tag">Pandas</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/ERDepartmentProcessMining" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-            // Add gradient orbs
-            const orbCount = 3;
-            const colors = [
-                'radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent)',
-                'radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent)',
-                'radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent)'
-            ];
-            
-            for (let i = 0; i < orbCount; i++) {
-                const orb = document.createElement('div');
-                orb.className = 'gradient-orb';
-                orb.style.width = (150 + Math.random() * 200) + 'px';
-                orb.style.height = orb.style.width;
-                orb.style.left = (Math.random() * 100) + '%';
-                orb.style.top = (Math.random() * 100) + '%';
-                orb.style.background = colors[i];
-                orb.style.animationDelay = (Math.random() * 20) + 's';
-                orb.style.animationDuration = (15 + Math.random() * 10) + 's';
-                bg.appendChild(orb);
-            }
-        }
+    <!-- Decision Trees -->
+    <div class="card">
+      <span class="card-badge badge-research">Research · ML</span>
+      <h3>Decision Trees ML Library</h3>
+      <p>
+        scikit-learn-compatible implementation of ID3, CART, and C4.5 decision tree algorithms,
+        plus a RandomForest built from scratch with Bayesian hyperparameter tuning and multi-threading.
+      </p>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">scikit-learn</span>
+          <span class="tag">NumPy</span><span class="tag">Graphviz</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/decision-trees" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
 
-        createFlameParticles();
+  </div><!-- /projects-grid research -->
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+  <!-- ── PROFESSIONAL WORK ── -->
+  <div class="section-head" id="work">
+    <h2>Professional Work</h2>
+    <span class="section-count">3 roles</span>
+  </div>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
-                }
-            });
-        }, observerOptions);
+  <div class="work-list">
 
-        document.querySelectorAll('.model-card, .feature').forEach(el => {
-            el.style.opacity = '0';
-            observer.observe(el);
-        });
-    </script>
+    <!-- Math&Sport -->
+    <div class="work-card">
+      <div class="work-header">
+        <span class="work-title">Full Stack Developer</span>
+        <span class="work-period">July 2022 – Present · Milan, Italy</span>
+      </div>
+      <div class="work-company">Math&amp;Sport</div>
+
+      <div class="work-subhead">Mobile &amp; Web Platform</div>
+      <ul class="work-points">
+        <li>Real-time football tracking visualization at 60fps with interpolation algorithms</li>
+        <li>Cross-platform app for football analysis and player clustering; WebCodecs API for MP4/WebM export</li>
+        <li>Lightweight temporal models for trajectory prediction in-browser via WebGPU acceleration</li>
+        <li>Football analysis workspace integrated with LLMs using MCP servers (OpenRouter, OpenAI)</li>
+      </ul>
+      <div class="work-subhead">Backend &amp; Infrastructure</div>
+      <ul class="work-points">
+        <li>Secure WebSocket server with custom RSA/AES handshaking protocol and key rotation</li>
+        <li>Security assessments identifying DDoS/MITM vulnerabilities; on-site server maintenance</li>
+      </ul>
+      <div class="work-subhead">AI/ML</div>
+      <ul class="work-points">
+        <li>Football tracking/event data pipeline using MosaicML for production-level temporal model training</li>
+        <li>Trajectory prediction models and tokenisation of football actions for LLM analysis</li>
+        <li>Inverse Reinforcement Learning (IRL) for detection of explainable football tactics</li>
+      </ul>
+      <div class="tags" style="margin-top: 1rem;">
+        <span class="tag">React Native</span><span class="tag">React.js</span><span class="tag">D3.js</span>
+        <span class="tag">WebGPU</span><span class="tag">Node.js</span><span class="tag">Kubernetes</span>
+        <span class="tag">AWS</span><span class="tag">PyTorch</span><span class="tag">MosaicML</span>
+        <span class="tag">xLSTM</span><span class="tag">Graph Neural Networks</span>
+      </div>
+    </div>
+
+    <!-- Elay -->
+    <div class="work-card">
+      <div class="work-header">
+        <span class="work-title">Frontend Developer</span>
+        <span class="work-period">Feb 2020 – Jun 2021 · London, UK (Remote)</span>
+      </div>
+      <div class="work-company">Elay Automation Limited</div>
+      <ul class="work-points">
+        <li>Business automation tools and CRM integration with server-side rendering</li>
+        <li>Customisable recruitment chatbots and a React.js rich-text editor library</li>
+      </ul>
+      <div class="tags" style="margin-top: 0.8rem;">
+        <span class="tag">React.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span>
+      </div>
+      <div style="margin-top: 0.8rem;">
+        <a href="https://github.com/Farzad-RK/elay-text-editor" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Diaco -->
+    <div class="work-card">
+      <div class="work-header">
+        <span class="work-title">CTO &amp; Full Stack Developer</span>
+        <span class="work-period">Jul 2017 – Sep 2019</span>
+      </div>
+      <div class="work-company">Diaco Studios</div>
+
+      <div class="work-subhead">IoT Real-Time Monitoring</div>
+      <ul class="work-points">
+        <li>Express.js/MongoDB backend for complex sensor queries; Arduino microcontrollers with custom drivers (CO2, smoke, humidity)</li>
+        <li>Android app for real-time sensor data visualisation via WebSocket</li>
+      </ul>
+      <div class="work-subhead">Mobile Applications</div>
+      <ul class="work-points">
+        <li>Cross-platform medical app with Android native module for Google Maps pathfinding</li>
+        <li>Film festival app with live streaming via NGINX RTMP/FFMPEG and MPEG-DASH playback <a href="https://github.com/Farzad-RK/film-festival-client" style="color:var(--purple);font-weight:600;">[GitHub]</a></li>
+        <li>Cross-platform trivia quiz app for real-time competitions <a href="https://github.com/Farzad-RK/zarafe" style="color:var(--purple);font-weight:600;">[GitHub]</a></li>
+      </ul>
+      <div class="work-subhead">Backend &amp; Infrastructure</div>
+      <ul class="work-points">
+        <li>Live streaming microservice with NGINX RTMP authentication and FFMPEG encoding</li>
+        <li>Ported an Android messenger app to desktop (Java) for deployment of containerised bots</li>
+      </ul>
+      <div class="tags" style="margin-top: 1rem;">
+        <span class="tag">React Native</span><span class="tag">Node.js</span><span class="tag">MongoDB</span>
+        <span class="tag">Arduino</span><span class="tag">C/C++</span><span class="tag">Docker</span>
+        <span class="tag">NGINX RTMP</span><span class="tag">MPEG-DASH</span>
+      </div>
+    </div>
+
+  </div><!-- /work-list -->
+
+
+  <!-- ── SYSTEMS & INFRA ── -->
+  <div class="section-head" id="systems">
+    <h2>Systems &amp; Infrastructure</h2>
+    <span class="section-count">3 projects</span>
+  </div>
+
+  <div class="projects-grid">
+
+    <div class="card">
+      <span class="card-badge badge-systems">Systems · IaC</span>
+      <h3>IaC Provisioning of MooseFS + Web File Manager</h3>
+      <p>
+        Fully automated 4-node MooseFS distributed storage cluster on bare-metal KVM using
+        Terraform/Libvirt and cloud-init — no public cloud dependency.
+      </p>
+      <ul class="card-points">
+        <li>Deterministic, version-controlled deployment with cloud-init hostname/IP/service bootstrapping</li>
+        <li>Microservice-based web file manager: stateless FastAPI backend + React.js frontend</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Terraform</span><span class="tag">Libvirt</span>
+          <span class="tag">Cloud-init</span><span class="tag">MooseFS</span>
+          <span class="tag">FastAPI</span><span class="tag">Docker</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/MooseFS-File-Manager" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-badge badge-systems">Systems · K8s</span>
+      <h3>Distributed Storage in Bare-Metal Kubernetes</h3>
+      <p>
+        Bare-metal Kubernetes cluster with automated VM provisioning via Terraform/Libvirt,
+        Longhorn distributed storage, and MongoDB replicaset for high availability.
+      </p>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Terraform</span><span class="tag">Kubernetes</span>
+          <span class="tag">Longhorn</span><span class="tag">MongoDB</span><span class="tag">MetalLB</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/cloud-computing-bare-metal" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-badge badge-game">Game Dev · Networking</span>
+      <h3>Meckz — Online Multiplayer Game Netcode</h3>
+      <p>
+        Real-time multiplayer netcode for a Unity3D game, built in Go with Reliable UDP,
+        dead reckoning for lag compensation, and NAT hole punching for peer-to-peer connections.
+      </p>
+      <ul class="card-points">
+        <li>Binary game-state encoding with Flatbuffers for minimal packet size</li>
+        <li>NAT hole punching to bypass routers without port forwarding</li>
+      </ul>
+      <div class="card-footer">
+        <div class="tags">
+          <span class="tag">Golang</span><span class="tag">UDP</span>
+          <span class="tag">Flatbuffers</span><span class="tag">Unity3D</span>
+        </div>
+        <a href="https://github.com/Farzad-RK/meckz-realtime-mutliplayer-netcode" class="card-link" target="_blank">
+          <svg class="gh-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /projects-grid systems -->
+
+
+  <!-- ── EARLY CAREER ── -->
+  <div class="section-head" id="other">
+    <h2>Early Career</h2>
+    <span class="section-count">2012</span>
+  </div>
+
+  <div class="projects-grid">
+    <div class="card">
+      <span class="card-badge badge-early">Android · ROM Dev</span>
+      <h3>HTC Sense 2.1 Port</h3>
+      <p>Cross-manufacturer ROM port from HTC Hero to Samsung Galaxy Gio. One of the earlier community contributions to Android custom ROM development.</p>
+      <div class="card-footer">
+        <div class="tags"><span class="tag">Android</span><span class="tag">ROM</span></div>
+        <a href="https://xdaforums.com/t/dev-rom-team-sense-htc-sense-2-1-still-alive.1720587/" class="card-link" target="_blank">XDA Thread</a>
+      </div>
+    </div>
+    <div class="card">
+      <span class="card-badge badge-early">Android · Kernel</span>
+      <h3>Custom Kernel — Undervolting Mechanism</h3>
+      <p>Advanced undervolting kernel for battery optimisation, compatible with CM7, AOSP, and Stock ROMs.</p>
+      <div class="card-footer">
+        <div class="tags"><span class="tag">Android</span><span class="tag">Kernel</span><span class="tag">C</span></div>
+        <a href="https://xdaforums.com/t/dev-kernel-cm7-aosp-stock-cyanmobile-u235-kernel-2-6-35-14-add-on-update-1-0-3.1857846/" class="card-link" target="_blank">XDA Thread</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer id="contact">
+  <div class="footer-inner">
+    <p class="footer-name">Farzad Rahimkhanian</p>
+    <div class="footer-links">
+      <a href="mailto:farzad@eyeflame.io">farzad@eyeflame.io</a>
+      <a href="tel:+393515498795">+39 351 549 8795</a>
+      <a href="https://github.com/Farzad-RK" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/farzad-rahim-khanian-90b024231/" target="_blank">LinkedIn</a>
+      <a href="https://eyeflame.io/" target="_blank">eyeflame.io</a>
+    </div>
+    <p class="footer-copy">📍 Milan, Italy &nbsp;·&nbsp; © 2026 Farzad Rahimkhanian</p>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll offset for fixed nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - 72;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
 </body>
 </html>
